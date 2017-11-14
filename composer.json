@@ -29,7 +29,7 @@
   "target-dir": "Keyteq/Bundle/CloudinaryMetaIndexer",
   "autoload": {
     "psr-0": {
-      "Keyteq\\Bundle\\CloudinaryMetaIndexerBundle": ""
+      "Keyteq\\Bundle\\CloudinaryMetaIndexer": ""
     }
   },
   "scripts": {
