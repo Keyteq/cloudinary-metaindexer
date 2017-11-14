@@ -1,0 +1,4 @@
+parameters:
+
+keyteq.cloudinary_meta_indexer.manager:
+    class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\CloudinaryManager

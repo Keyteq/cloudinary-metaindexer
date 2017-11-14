@@ -1,0 +1,12 @@
+.idea/
+vendor/
+var/
+composer.phar
+composer.lock
+phpunit.phar
+.php_cs.cache
+**/.sass-cache
+npm-debug.log
+node_modules
+*.css.map
+build
