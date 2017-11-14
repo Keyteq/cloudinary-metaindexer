@@ -1,8 +1,0 @@
-Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryItem:
-    fields:
-        id:
-            id:  true
-        name:
-            type: string
-        price:
-            type: float

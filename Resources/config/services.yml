@@ -1,4 +1,20 @@
 parameters:
+    keyteq.cloudinary_meta_indexer.proxies: '%kernel.cache_dir%/doctrine/odm/mongodb/Proxies'
+    keyteq.cloudinary_meta_indexer.hydrators: '%kernel.cache_dir%/doctrine/odm/mongodb/Hydrators'
+    keyteq_cloudinary_meta_indexer.server: ~
+services:
+    keyteq.cloudinary_meta_indexer.storage:
+        lazy: true
+        class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\StorageManager
+        arguments:
+            - '@file_locator'
+            - '%keyteq.cloudinary_meta_indexer.proxies%'
+            - '%keyteq.cloudinary_meta_indexer.hydrators%'
+            - '%keyteq_cloudinary_meta_indexer.server%'
 
-keyteq.cloudinary_meta_indexer.manager:
-    class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\CloudinaryManager
+    keyteq.cloudinary_meta_indexer.sync:
+        lazy: true
+        class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\SyncManager
+        arguments:
+            - '@keyteq.cloudinary_meta_indexer.storage'
+            - '%cloudinary_meta_indexer.config%'

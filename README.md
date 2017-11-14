@@ -38,3 +38,13 @@ app/AppKernel.php
 ```
 new Keyteq\Bundle\CloudinaryMetaIndexer\CloudinaryMetaIndexerBundle(),
 ```
+
+
+Configure api keys for cloudinary
+
+```
+keyteq_cloudinary_meta_indexer:
+    cloudinary_api_key: 'xxxxxxx'
+    cloudinary_api_secret: 'yyyyyyyy'
+    cloudinary_cloud_name: 'zzzz'
+```

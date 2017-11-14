@@ -9,7 +9,7 @@
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Document;
 
 
-class CloudinaryItem
+class CloudinaryResource
 {
 
 }
