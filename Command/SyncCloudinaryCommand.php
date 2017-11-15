@@ -30,7 +30,7 @@ class SyncCloudinaryCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $syncService = $container->get('keyteq.cloudinary_meta_indexer.sync');
-        $syncService->sync();
+        $syncService->sync($output);
     }
 
 }

@@ -24,6 +24,16 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('cloudinary_api_key')->isRequired()->end()
             ->scalarNode('cloudinary_api_secret')->isRequired()->end()
             ->scalarNode('cloudinary_cloud_name')->isRequired()->end()
+            ->arrayNode('mongodb')
+                ->children()
+                    ->scalarNode('server')->defaultNull()->end()
+                    ->scalarNode('database')->isRequired()->end()
+                    ->scalarNode('hydrators_path')->defaultValue('%kernel.cache_dir%/doctrine/odm/mongodb/Hydrators')->end()
+                    ->scalarNode('autogenerate_hydrators')->defaultValue(true)->end()
+                    ->scalarNode('proxies_path')->defaultValue('%kernel.cache_dir%/doctrine/odm/mongodb/Proxies')->end()
+                    ->scalarNode('autogenerate_proxies')->defaultValue(true)->end()
+                ->end()
+            ->end()
             ->end()
         ;
 

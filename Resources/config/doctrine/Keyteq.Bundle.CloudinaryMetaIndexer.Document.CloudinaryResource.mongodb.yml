@@ -1,0 +1,32 @@
+Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource:
+    type: document
+    collection: cloudinary_resources
+    fields:
+        publicId:
+            type: string
+            id: true
+            strategy: NONE
+        format:
+            type: string
+        version:
+            type: string
+        resourceType:
+            type: string
+        type:
+            type: string
+        createdAt:
+            type: date
+        bytes:
+            type: int
+        width:
+            type: int
+        height:
+            type: int
+        url:
+            type: string
+        secureUrl:
+            type: string
+        tags:
+            type: collection
+        context:
+            type: hash

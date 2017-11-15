@@ -1,0 +1,15 @@
+
+<form method="get">
+    <input type="text" name="s" value="{{ app.request.get('s') }}" />
+    <button type="submit">Søk</button>
+</form>
+
+
+<div class="row">
+    {% for resource in resources %}
+        <div class="col-xs-6 col-md-4">
+            {% include 'KeyteqCloudinaryMetaIndexerBundle:cloudinary:resource.html.twig' with {'resource': resource} %}
+        </div>
+    {% endfor %}
+</div>
+

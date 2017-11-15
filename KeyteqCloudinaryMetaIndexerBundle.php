@@ -7,7 +7,7 @@ use Keyteq\Bundle\CloudinaryMetaIndexer\DependencyInjection\KeyteqCloudinaryMeta
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class CloudinaryMetaIndexerBundle extends Bundle
+class KeyteqCloudinaryMetaIndexerBundle extends Bundle
 {
 
     public function build(ContainerBuilder $container)
