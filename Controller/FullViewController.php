@@ -39,7 +39,7 @@ class FullViewController extends Controller
      * @param BaseView $view
      * @return ContentView|\Netgen\Bundle\EzPlatformSiteApiBundle\View\ContentView
      */
-    public function viewCloudinaryPage ( Request $request, BaseView $view ) {
+    public function viewCloudinaryPage(Request $request, BaseView $view) {
         $search = trim($request->get('s'));
         $content = $view->getContent();
         $tags = $content->getFieldValue('tags')->text;

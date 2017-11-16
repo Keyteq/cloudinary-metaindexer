@@ -11,7 +11,6 @@ namespace Keyteq\Bundle\CloudinaryMetaIndexer\Document;
 
 class CloudinaryResource
 {
-
     protected $publicId;
 
     protected $format;
@@ -247,6 +246,11 @@ class CloudinaryResource
     }
 
 
+    /**
+     * Generates a <img> tag for previewing a resource.
+     *
+     * @return string html tag representing the resource.
+     */
     public function getThumbnail () {
         $file = $this->getPublicId() . '.' . 'jpg';
         return cl_image_tag($file, array(
@@ -255,6 +259,4 @@ class CloudinaryResource
             'crop' => 'fill'
         ));
     }
-
-
 }

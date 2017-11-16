@@ -5,9 +5,7 @@
  * Date: 14.11.2017
  * Time: 13.26
  */
-
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Manager;
-
 
 use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
@@ -18,7 +16,6 @@ use Symfony\Component\HttpKernel\Config\FileLocator;
 
 class StorageManager
 {
-
     /**
      * @var DocumentManager
      */
@@ -56,26 +53,32 @@ class StorageManager
         ));
     }
 
-    public function getManager () {
+    /**
+     * @return DocumentManager
+     */
+    public function getManager()
+    {
         return $this->dm;
     }
 
-    public function getResources($tags = [], $search = null) {
+    /**
+     * Returns CloudinaryResource objects based on the filtering given as arguments.
+     *
+     * @param array $tags To filter on array of tags
+     * @param null|string $search If you want to search in the field values
+     * @return mixed
+     */
+    public function getResources($tags = [], $search = null)
+    {
         $query = $this->getManager()->createQueryBuilder(CloudinaryResource::class);
-
         if ($tags) {
             $query->field('tags')->in($tags);
         }
-
         if ($search) {
             $query->addAnd($query->expr()->field('publicId')->equals(new \MongoRegex('/.*'.$search.'.*/i')));
         }
-
         $query->sort('createdAt', 'desc');
-
         $resources = $query->getQuery()->execute();
         return $resources;
     }
-
-
 }

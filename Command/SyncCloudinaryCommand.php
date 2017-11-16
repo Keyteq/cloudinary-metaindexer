@@ -8,14 +8,12 @@
 
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Command;
 
-
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SyncCloudinaryCommand extends ContainerAwareCommand
 {
-
     /**
      * Configures the current command.
      */
@@ -25,12 +23,17 @@ class SyncCloudinaryCommand extends ContainerAwareCommand
             ->setDescription('Syncronizes data from cloudinary to mongodb');
     }
 
-
+    /**
+     * Executes the command
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
         $syncService = $container->get('keyteq.cloudinary_meta_indexer.sync');
         $syncService->sync($output);
     }
-
 }

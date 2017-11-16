@@ -5,7 +5,6 @@
  * Date: 14.11.2017
  * Time: 13.26
  */
-
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Manager;
 
 use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
@@ -37,28 +36,22 @@ class SyncManager
         $this->logger = $logger instanceof LoggerInterface ? $logger : new NullLogger();
     }
 
-
-    public function sync (OutputInterface $output) {
-
+    public function sync(OutputInterface $output)
+    {
         try {
             $dm = $this->storageManager->getManager();
-
             $existingPubIds = array();
             $addedPubIds = array();
-
             $all = $dm->getRepository(CloudinaryResource::class)->findAll();
             foreach ($all as $resource) {
                 $existingPubIds[] = $resource->getPublicId();
             }
-
-
             $api = new \Cloudinary\Api();
             $result = $api->resources(array(
                 'resource_type' => 'image',
                 'tags' => true,
                 'context' => true
             ));
-
             // Add / update items based on the api results
             foreach ($result as $items) {
                 foreach ($items as $item) {
@@ -88,7 +81,6 @@ class SyncManager
                     $addedPubIds[] = $item['public_id'];
                 }
             }
-
             // Removing resources from mongodb that is no longer in cloudinary.
             foreach ($existingPubIds as $existingPubId) {
                 if (!in_array($existingPubId, $addedPubIds)) {
@@ -97,7 +89,6 @@ class SyncManager
                     $output->writeln("Removing pub-id {$existingPubId}.");
                 }
             }
-
             $dm->flush();
         } catch (\Exception $e) {
             $this->logException($e);
