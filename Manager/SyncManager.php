@@ -54,10 +54,9 @@ class SyncManager
                 $existingPubIds[] = $resource->getPublicId();
             }
 
-            $result = $this->adapter->getResources();
-
-            // Add / update items based on the api results
-            foreach ($result as $items) {
+            // Make sure to pass array &$addedPubIds as reference ( to avoid deletion of actual existing items ).
+            $this->adapter->getResources(function ($items) use ($dm, $output, &$addedPubIds) {
+                $output->writeln("Processing batch of cloudinary items...");
                 foreach ($items as $item) {
                     $resource = $dm->find(CloudinaryResource::class, $item['public_id']);
 
@@ -84,7 +83,8 @@ class SyncManager
 
                     $addedPubIds[] = $item['public_id'];
                 }
-            }
+            });
+
             // Removing resources from mongodb that is no longer in cloudinary.
             foreach ($existingPubIds as $existingPubId) {
                 if (!in_array($existingPubId, $addedPubIds)) {

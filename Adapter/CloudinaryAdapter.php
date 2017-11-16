@@ -13,6 +13,9 @@ use Cloudinary\Api;
 
 class CloudinaryAdapter implements AdapterInterface
 {
+    const MAX_PAGE_RESULTS = 500;
+
+
     public function __construct(array $bundleConfiguration)
     {
         // Configure cloudinary, certain preview functions for e.g. thumbnail generation needs this to be configured.
@@ -23,14 +26,23 @@ class CloudinaryAdapter implements AdapterInterface
         ));
     }
 
-    public function getResources()
+    public function getResources(callable $itemsCallback)
     {
         $api = new Api();
-        $result = $api->resources(array(
-            'resource_type' => 'image',
-            'tags' => true,
-            'context' => true
-        ));
-        return $result;
+        $nextCursor = null;
+        do {
+            $params = array(
+                'resource_type' => 'image',
+                'tags' => true,
+                'context' => true,
+                'max_results' => self::MAX_PAGE_RESULTS
+            );
+            if ($nextCursor !== null) {
+                $params['next_cursor'] = $nextCursor;
+            }
+            $result = $api->resources($params);
+            call_user_func_array($itemsCallback, [$result['resources']]);
+            $nextCursor = isset($result['next_cursor']) && $result['next_cursor'] ? $result['next_cursor'] : null;
+        } while($nextCursor !== null);
     }
 }

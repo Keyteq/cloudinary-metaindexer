@@ -17,6 +17,6 @@ interface AdapterInterface
      *
      * @return array|\ArrayIterator
      */
-    public function getResources();
+    public function getResources(callable $itemsCallback);
 
 }
