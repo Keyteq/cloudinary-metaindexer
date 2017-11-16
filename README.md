@@ -2,9 +2,17 @@
 
 Indexes cloudinary account to a mongodb database, and makes it available to list items in the frontend based on configured tags.
 
+This way you can create custom eZ pages that only lists cloudinary resources tagged with certain tags. 
+
+## Prerequisites
+
+- eZ Publish 5.4+ / eZ Platform
+- Mongodb installed on the server.
+- A cloudinary account.
+
 ## INSTALL
 
-If you are running PHP 7+ you don't have the old legacy mongodb. You need to install this adapter for mongodb:
+If you are running PHP 7+ you don't have the old legacy mongodb php extension. You need to install this adapter for mongodb:
 
 ```
 composer require alcaeus/mongo-php-adapter --ignore-platform-reqs
@@ -66,17 +74,17 @@ keyteq_cloudinary_meta_indexer:
 
 ## Test cloudinary sync
 
+Prerequisite: You need to install mongodb on the server.
+
 ```
 php app/console keyteq:cloudinary-meta-indexer:sync
 ```
 
 ## Setup a cron job to run mongodb sync
 
-You need to install mongodb on the server.
+Setup a new cronjob to run the synchronization job:
 
-Setup a new cronjob to run the syncronization job:
-
-NOTE: change app/console to ezpublish/console depending on your ez publish version.
+NOTE: change `app/console to `ezpublish/console` depending on your eZ publish/platform version.
 
 The below cron specification will run this job at 2:30 every night.
 
@@ -94,7 +102,7 @@ The below cron specification will run this job at 2:30 every night.
 
 ## Extending the template with a pagelayout
 
-By default, we don't extend any template, so the layout will be empty.
+By default, we don't extend any template, so the layout will be empty ( no header and footer ).
 
 Create your own override in `content_view.yml`:
 
