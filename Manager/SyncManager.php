@@ -7,6 +7,7 @@
  */
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Manager;
 
+use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\AdapterInterface;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -29,11 +30,17 @@ class SyncManager
      */
     protected $logger;
 
-    public function __construct(StorageManager $storageManager, array $config, LoggerInterface $logger = null)
+    /**
+     * @var AdapterInterface
+     */
+    protected $adapter;
+
+    public function __construct(StorageManager $storageManager, AdapterInterface $adapter, array $config, LoggerInterface $logger = null)
     {
         $this->storageManager = $storageManager;
         $this->config = $config;
         $this->logger = $logger instanceof LoggerInterface ? $logger : new NullLogger();
+        $this->adapter = $adapter;
     }
 
     public function sync(OutputInterface $output)
@@ -46,12 +53,9 @@ class SyncManager
             foreach ($all as $resource) {
                 $existingPubIds[] = $resource->getPublicId();
             }
-            $api = new \Cloudinary\Api();
-            $result = $api->resources(array(
-                'resource_type' => 'image',
-                'tags' => true,
-                'context' => true
-            ));
+
+            $result = $this->adapter->getResources();
+
             // Add / update items based on the api results
             foreach ($result as $items) {
                 foreach ($items as $item) {

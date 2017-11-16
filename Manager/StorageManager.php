@@ -11,6 +11,7 @@ use Doctrine\MongoDB\Connection;
 use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
+use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\AdapterInterface;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 
@@ -24,9 +25,10 @@ class StorageManager
     /**
      * StorageManager constructor.
      * @param FileLocator $fileLocator
+     * @param AdapterInterface $adapter
      * @param array $bundleConfiguration
      */
-    public function __construct(FileLocator $fileLocator, array $bundleConfiguration)
+    public function __construct(FileLocator $fileLocator, AdapterInterface $adapter, array $bundleConfiguration)
     {
         $config = new Configuration();
         $config->setProxyDir($bundleConfiguration['mongodb']['proxies_path']);
@@ -44,13 +46,6 @@ class StorageManager
         $connection = new Connection($bundleConfiguration['mongodb']['server']);
 
         $this->dm = DocumentManager::create($connection, $config);
-
-        // Configure cloudinary, certain preview functions for e.g. thumbnail generation needs this to be configured.
-        \Cloudinary::config(array(
-            "cloud_name" => $bundleConfiguration['cloudinary_cloud_name'],
-            "api_key" => $bundleConfiguration['cloudinary_api_key'],
-            "api_secret" => $bundleConfiguration['cloudinary_api_secret']
-        ));
     }
 
     /**

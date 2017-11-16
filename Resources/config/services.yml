@@ -1,17 +1,20 @@
 imports:
     - { resource: controllers.yml }
 services:
+    keyteq.cloudinary_meta_indexer.adapter.cloudinary:
+        class: Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\CloudinaryAdapter
+        arguments:
+            - '%cloudinary_meta_indexer.config%'
     keyteq.cloudinary_meta_indexer.storage:
-        lazy: true
         class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\StorageManager
         arguments:
             - '@file_locator'
+            - '@keyteq.cloudinary_meta_indexer.adapter.cloudinary'
             - '%cloudinary_meta_indexer.config%'
-
     keyteq.cloudinary_meta_indexer.sync:
-        lazy: true
         class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\SyncManager
         arguments:
             - '@keyteq.cloudinary_meta_indexer.storage'
+            - '@keyteq.cloudinary_meta_indexer.adapter.cloudinary'
             - '%cloudinary_meta_indexer.config%'
             - "@?logger"
