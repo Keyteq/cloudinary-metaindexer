@@ -6,39 +6,34 @@ This way you can create custom eZ pages that only lists cloudinary resources tag
 
 ## Prerequisites
 
-- eZ Publish 5.4+ / eZ Platform
-- Mongodb installed on the server.
+- eZ Publish 5.4+ or eZ Platform
+- PHP 5.5+
+- Mongodb installed on the server. And php extension for mongodb installed.
 - A cloudinary account.
 
 ## INSTALL
 
-If you are running PHP 7+ you don't have the old legacy mongodb php extension. You need to install this adapter for mongodb:
+
+### Step 1
+
+If you are running PHP 5.6+ / 7+ you don't have the old `ext-mongo` installed. Doctrine ODM 1.X requires `ext-mongo`, but there is a adapter available for this case.
+
+You need to install this adapter for mongodb (PHP 5.6+ / 7+):
+
+Note: If you have PHP version less then PHP 5.6 - **skip this step**.
 
 ```
 composer require alcaeus/mongo-php-adapter --ignore-platform-reqs
 ```
 
-Then, install this bundle (stable):
+### Step 2
+
+Install this bundle (stable):
 
 ```
 composer require keyteq/cloudinary-metaindexer
 ```
 
-To use master branch:
-
-composer.json
-
-```
-    "require" : {
-        [...]
-        "keyteq/cloudinary-metaindexer" : "dev-master"
-    },
-    "repositories" : [{
-        "type" : "vcs",
-        "url" : "https://github.com/keyteq/cloudinary-metaindexer.git"
-    }],
-
-```
 
 
 ## CONFIGURE
@@ -49,7 +44,7 @@ Add to the app kernel to enable the bundle (`app/AppKernel.php`):
 new Keyteq\Bundle\CloudinaryMetaIndexer\CloudinaryMetaIndexerBundle(),
 ```
 
-Add standard views configuration to `app/ezplatform.yml`:
+Add standard views configuration to `app/config/ezplatform.yml` / `ezpublish/config/ezpublish.yml`:
 
 ```
 imports:
@@ -58,7 +53,7 @@ imports:
 ```
 
 
-Configure api keys and database name for cloudinary in `config.yml`
+Configure api keys and database name for cloudinary in `app/config/config.yml`
 
 In the example below we use environment parameters as values (so you keep the secrets safe).
 
@@ -69,12 +64,10 @@ keyteq_cloudinary_meta_indexer:
     cloudinary_cloud_name: '%cloudinary_cloud_name%'
     mongodb:
         server: ~
-        database: 'myproject_cloudinary'
+        database: 'myproject_cloudinary' # Change this to something unique for the project.
 ```
 
 ## Test cloudinary sync
-
-Prerequisite: You need to install mongodb on the server.
 
 ```
 php app/console keyteq:cloudinary-meta-indexer:sync

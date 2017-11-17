@@ -70,7 +70,13 @@ class StorageManager
             $query->field('tags')->in($tags);
         }
         if ($search) {
-            $query->addAnd($query->expr()->field('publicId')->equals(new \MongoRegex('/.*'.$search.'.*/i')));
+            $searchRegex = new \MongoRegex('/.*'.$search.'.*/i');
+            $query->addAnd(
+                $query->expr()->addOr(
+                    $query->expr()->field('publicId')->equals($searchRegex),
+                    $query->expr()->field('tags')->in(array($searchRegex))
+                )
+            );
         }
         $query->sort('createdAt', 'desc');
         $resources = $query->getQuery()->execute();

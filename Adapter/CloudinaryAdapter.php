@@ -10,6 +10,7 @@ namespace Keyteq\Bundle\CloudinaryMetaIndexer\Adapter;
 
 use Cloudinary;
 use Cloudinary\Api;
+use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\Exception\ResourceLoopException;
 
 class CloudinaryAdapter implements AdapterInterface
 {
@@ -26,6 +27,13 @@ class CloudinaryAdapter implements AdapterInterface
         ));
     }
 
+    /**
+     * Gets resources and calls callback with the items available.
+     *
+     * @param callable $itemsCallback Called function per page of items returned from the rest api.
+     * @throws ResourceLoopException if rate limited by api or unable to parse api results.
+     * @return void
+     */
     public function getResources(callable $itemsCallback)
     {
         $api = new Api();
@@ -41,8 +49,13 @@ class CloudinaryAdapter implements AdapterInterface
                 $params['next_cursor'] = $nextCursor;
             }
             $result = $api->resources($params);
+
             call_user_func_array($itemsCallback, [$result['resources']]);
             $nextCursor = isset($result['next_cursor']) && $result['next_cursor'] ? $result['next_cursor'] : null;
+
+            if ($nextCursor && $result->rate_limit_remaining == 0) {
+                throw new ResourceLoopException("Rate limit exceeded for API calls to cloudinary. Max calls: {$result->rate_limit_allowed}. Limit resets at " . date('d.m-Y H:s', $result->rate_limit_reset_at));
+            }
         } while($nextCursor !== null);
     }
 }
