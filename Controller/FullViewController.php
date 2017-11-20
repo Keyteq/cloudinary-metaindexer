@@ -62,4 +62,35 @@ class FullViewController extends Controller
         return $response;
     }
 
+
+    /**
+     * Use for eZ Publish 5.X only. If on eZ Platform, use viewCloudinaryPage instead.
+     *
+     * @param Request $request
+     * @param $locationId
+     * @param $viewType
+     * @param bool $layout
+     * @param array $params
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function viewCloudinaryPageLocation( Request $request, $locationId, $viewType, $layout = false, array $params = array() )
+    {
+        $location = $this->getRepository()->getLocationService()->loadLocation( $locationId );
+        $content = $this->getRepository()->getContentService()->loadContent( $location->contentId );
+        $search = trim($request->get('s'));
+        $tags = $content->getFieldValue('tags')->text;
+
+        if ($tags) {
+            $tags = explode(',', $tags);
+        }
+
+        $resources = $this->storageManager->getResources($tags, $search);
+
+        $params = $params + array(
+                'resources' => $resources
+            );
+
+        return $this->container->get( 'ez_content' )->viewLocation( $locationId, $viewType, $layout, $params );
+    }
+
 }

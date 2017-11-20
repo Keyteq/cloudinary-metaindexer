@@ -95,10 +95,10 @@ The below cron specification will run this job at 2:30 every night.
 
 ## Extending the template with a pagelayout
 
+
+### Step 1
+
 By default, we don't extend any template, so the layout will be empty ( no header and footer ).
-
-
-Note: If you are using layouts, use "ngcontent_view" instead of content_view.
 
 Create your own override in `content_view.yml`:
 
@@ -114,6 +114,14 @@ ezpublish:
                         match:
                             Identifier\ContentType: cloudinary_page
 ```
+
+Note: If you are using layouts, use "ngcontent_view" instead of content_view.
+
+Note: if you are on eZ Publish 5.X ( not platform), change `viewCloudinaryPage` to `viewCloudinaryPageLocation`.
+
+
+### Step 2
+
 
 And create a new template for the cloudinary_page: `AcmeDemoBundle/Resources/views/full/cloudinary_page.html.twig`:
 
