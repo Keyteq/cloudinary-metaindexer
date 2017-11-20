@@ -97,6 +97,9 @@ The below cron specification will run this job at 2:30 every night.
 
 By default, we don't extend any template, so the layout will be empty ( no header and footer ).
 
+
+Note: If you are using layouts, use "ngcontent_view" instead of content_view.
+
 Create your own override in `content_view.yml`:
 
 ```
