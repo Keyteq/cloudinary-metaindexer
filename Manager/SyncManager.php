@@ -67,18 +67,36 @@ class SyncManager
                     } else {
                         $output->writeln("Updating pub-id {$item['public_id']}");
                     }
-                    $resource->setBytes($item['bytes']);
-                    $resource->setCreatedAt($item['created_at']);
-                    $resource->setFormat($item['format']);
-                    $resource->setHeight($item['height']);
-                    $resource->setResourceType($item['resource_type']);
-                    $resource->setSecureUrl($item['secure_url']);
-                    $resource->setType($item['type']);
-                    $resource->setUrl($item['url']);
-                    $resource->setVersion($item['version']);
-                    $resource->setWidth($item['width']);
-                    $resource->setTags($item['tags']);
-                    $resource->setContext(isset($item['context']) ? $item['context'] : null);
+
+                    switch($item['resource_type']) {
+                        case 'raw':
+                            $resource->setContext(isset($item['context']) ? $item['context'] : null);
+                            $resource->setVersion($item['version']);
+                            $resource->setResourceType($item['resource_type']);
+                            $resource->setType($item['type']);
+                            $resource->setCreatedAt($item['created_at']);
+                            $resource->setBytes($item['bytes']);
+                            $resource->setUrl($item['url']);
+                            $resource->setSecureUrl($item['secure_url']);
+                            $resource->setTags($item['tags']);
+                            break;
+                        case 'image':
+                        case 'video':
+                            $resource->setBytes($item['bytes']);
+                            $resource->setCreatedAt($item['created_at']);
+                            $resource->setFormat($item['format']);
+                            $resource->setHeight($item['height']);
+                            $resource->setResourceType($item['resource_type']);
+                            $resource->setSecureUrl($item['secure_url']);
+                            $resource->setType($item['type']);
+                            $resource->setUrl($item['url']);
+                            $resource->setVersion($item['version']);
+                            $resource->setWidth($item['width']);
+                            $resource->setTags($item['tags']);
+                            $resource->setContext(isset($item['context']) ? $item['context'] : null);
+                            break;
+                    }
+
                     $dm->persist($resource);
 
                     $addedPubIds[] = $item['public_id'];

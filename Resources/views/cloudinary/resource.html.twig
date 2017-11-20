@@ -1,5 +1,12 @@
-<div class="cloudinary-resource cloudinary-resource-type--{{ resource.resourceType }} cloudinary-resource-format--{{ resource.format }}">
+<div class="cloudinary-resource cloudinary-resource-resourcetype--{{ resource.resourceType }}
+cloudinary-resource-format--{{ resource.format }}
+cloudinary-resource-ext--{{ resource.getFileExtension() }}"
+>
     <a href="{{ resource.secureUrl }}" target="_blank">
-        {{ resource.getThumbnail()|raw }}
+        {% if resource.resourceType == 'raw' %}
+            {{ resource.getPublicId() }}
+        {% else %}
+            {{ resource.getThumbnail()|raw }}
+        {% endif %}
     </a>
 </div>

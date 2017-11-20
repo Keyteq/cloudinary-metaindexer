@@ -38,24 +38,30 @@ class CloudinaryAdapter implements AdapterInterface
     {
         $api = new Api();
         $nextCursor = null;
-        do {
-            $params = array(
-                'resource_type' => 'image',
-                'tags' => true,
-                'context' => true,
-                'max_results' => self::MAX_PAGE_RESULTS
-            );
-            if ($nextCursor !== null) {
-                $params['next_cursor'] = $nextCursor;
-            }
-            $result = $api->resources($params);
 
-            call_user_func_array($itemsCallback, [$result['resources']]);
-            $nextCursor = isset($result['next_cursor']) && $result['next_cursor'] ? $result['next_cursor'] : null;
+        $types = array('raw', 'image', 'video');
 
-            if ($nextCursor && $result->rate_limit_remaining == 0) {
-                throw new ResourceLoopException("Rate limit exceeded for API calls to cloudinary. Max calls: {$result->rate_limit_allowed}. Limit resets at " . date('d.m-Y H:s', $result->rate_limit_reset_at));
-            }
-        } while($nextCursor !== null);
+        foreach ($types as $type) {
+            do {
+                $params = array(
+                    'resource_type' => $type,
+                    'tags' => true,
+                    'context' => true,
+                    'max_results' => self::MAX_PAGE_RESULTS
+                );
+                if ($nextCursor !== null) {
+                    $params['next_cursor'] = $nextCursor;
+                }
+                $result = $api->resources($params);
+
+                call_user_func_array($itemsCallback, [$result['resources']]);
+                $nextCursor = isset($result['next_cursor']) && $result['next_cursor'] ? $result['next_cursor'] : null;
+
+                if ($nextCursor && $result->rate_limit_remaining == 0) {
+                    throw new ResourceLoopException("Rate limit exceeded for API calls to cloudinary. Max calls: {$result->rate_limit_allowed}. Limit resets at " . date('d.m-Y H:s', $result->rate_limit_reset_at));
+                }
+            } while($nextCursor !== null);
+        }
+
     }
 }
