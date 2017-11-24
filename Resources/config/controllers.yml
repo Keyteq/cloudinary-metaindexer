@@ -1,9 +1,4 @@
 services:
-    keyteq.cloudinary_meta_indexer.controller.cloudinary_resources:
-        class: Keyteq\Bundle\CloudinaryMetaIndexer\Controller\CloudinaryResourceController
-        parent: ezpublish.controller.base
-        arguments:
-            - "@keyteq.cloudinary_meta_indexer.storage"
     keyteq.cloudinary_meta_indexer.controller.full_view:
         class: Keyteq\Bundle\CloudinaryMetaIndexer\Controller\FullViewController
         parent: ezpublish.controller.base

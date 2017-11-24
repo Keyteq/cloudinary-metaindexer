@@ -65,19 +65,25 @@ class StorageManager
      * @param null|string $search If you want to search in the field values
      * @return Pagerfanta
      */
-    public function getResources($tags = [], $search = null)
+    public function getResources($tags = [], $search = null, $publidIdPrefix = null)
     {
         $query = $this->getManager()->createQueryBuilder(CloudinaryResource::class);
         if ($tags) {
             $query->field('tags')->in($tags);
         }
         if ($search) {
-            $searchRegex = new \MongoRegex('/.*'.$search.'.*/i');
+            $searchRegex = new \MongoRegex('/.*'.preg_quote($search, '/').'.*/i');
             $query->addAnd(
                 $query->expr()->addOr(
                     $query->expr()->field('publicId')->equals($searchRegex),
                     $query->expr()->field('tags')->in(array($searchRegex))
                 )
+            );
+        }
+        if ($publidIdPrefix) {
+            $startsWithRegex = new \MongoRegex('/^'.preg_quote($publidIdPrefix, '/').'.*/');
+            $query->addAnd(
+                $query->expr()->field('publicId')->equals($startsWithRegex)
             );
         }
         $query->sort('createdAt', 'desc');

@@ -86,11 +86,14 @@ The below cron specification will run this job at 2:30 every night.
 ```
 
 
-## Create a new cloudinary page in admin
+## Import the cloudinary_page package
 
-1. Go to the administration interface and import this class: @TODO ( a ez class with tags (text line) .). 
-1. Create a new object of the content class. E.g. named "Presse". For tags you can e.g. set "presse". Then this page will only list cloudinary resources with the tag "presse".
-1. Visit the page in the browser: http://localhost/Presse . 
+
+See `Resources/ezcontentclass/` folder in this bundle, there is a content class that you can import via ez administration ui. 
+That package includes a new content class named `cloudinary_page` and contains some mandatory attributes. You are free to add 
+your own after you import the content class.
+
+After imported, create a new content object of that specific class.
 
 
 ## Extending the template with a pagelayout

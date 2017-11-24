@@ -91,12 +91,14 @@ class FullViewController extends Controller
 
 
     private function getPager (Request $request, $content, $search) {
-        $tags = $content->getFieldValue('tags')->text;
+        $tags = trim($content->getFieldValue('tags')->text);
+        $publicIdPrefix = trim($content->getFieldValue('publicid_prefix')->text);
+
         if ($tags) {
             $tags = explode(',', $tags);
         }
 
-        $pager = $this->storageManager->getResources($tags, $search);
+        $pager = $this->storageManager->getResources($tags, $search, $publicIdPrefix);
         $pager->setCurrentPage((int)$request->get('page', 1));
         $maxResultCount = $this->getConfigResolver()->getParameter('cloudinary_meta_indexer.resources_per_page');
         $pager->setMaxPerPage($maxResultCount);
