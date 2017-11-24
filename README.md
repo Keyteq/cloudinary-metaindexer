@@ -120,6 +120,20 @@ Note: If you are using layouts, use "ngcontent_view" instead of content_view.
 Note: if you are on eZ Publish 5.X ( not platform), change `viewCloudinaryPage` to `viewCloudinaryPageLocation`.
 
 
+#### Customization of controller
+
+#### Changing default 12 resources per page.
+
+To set 24 resources per page for siteaccess `YOUR_FRONT_SITEACCESS`:
+
+parameters.yml:
+
+```
+parameters:
+    ezsettings.YOUR_FRONT_SITEACCESS.cloudinary_meta_indexer.resources_per_page: 24
+```
+
+
 ### Step 2
 
 
@@ -135,4 +149,5 @@ And create a new template for the cloudinary_page: `AcmeDemoBundle/Resources/vie
 
 If you dont want the built in markup you can look inside the `KeyteqCloudinaryMetaIndexerBundle:content/full:cloudinary_page.html.twig`
 template and use certain parts of the template for your needs.
+
 

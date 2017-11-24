@@ -42,16 +42,11 @@ class FullViewController extends Controller
     public function viewCloudinaryPage(Request $request, BaseView $view) {
         $search = trim($request->get('s'));
         $content = $view->getContent();
-        $tags = $content->getFieldValue('tags')->text;
-
-        if ($tags) {
-            $tags = explode(',', $tags);
-        }
-
-        $resources = $this->storageManager->getResources($tags, $search);
+        $pager = $this->getPager($request, $content, $search);
 
         $view->addParameters(array(
-            'resources' => $resources
+            'resources' => $pager,
+            'searchText' => $search
         ));
 
         if ($view instanceof \Netgen\Bundle\EzPlatformSiteApiBundle\View\ContentView) {
@@ -78,19 +73,29 @@ class FullViewController extends Controller
         $location = $this->getRepository()->getLocationService()->loadLocation( $locationId );
         $content = $this->getRepository()->getContentService()->loadContent( $location->contentId );
         $search = trim($request->get('s'));
-        $tags = $content->getFieldValue('tags')->text;
 
+        $pager = $this->getPager($request, $content, $search);
+
+        $params = $params + array(
+                'resources' => $pager,
+                'searchText' => $search
+            );
+
+        return $this->container->get( 'ez_content' )->viewLocation( $locationId, $viewType, $layout, $params );
+    }
+
+
+    private function getPager (Request $request, $content, $search) {
+        $tags = $content->getFieldValue('tags')->text;
         if ($tags) {
             $tags = explode(',', $tags);
         }
 
-        $resources = $this->storageManager->getResources($tags, $search);
-
-        $params = $params + array(
-                'resources' => $resources
-            );
-
-        return $this->container->get( 'ez_content' )->viewLocation( $locationId, $viewType, $layout, $params );
+        $pager = $this->storageManager->getResources($tags, $search);
+        $pager->setCurrentPage((int)$request->get('page', 1));
+        $maxResultCount = $this->getConfigResolver()->getParameter('cloudinary_meta_indexer.resources_per_page');
+        $pager->setMaxPerPage($maxResultCount);
+        return $pager;
     }
 
 }

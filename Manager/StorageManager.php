@@ -13,6 +13,8 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\AdapterInterface;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
+use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 
 class StorageManager
@@ -61,7 +63,7 @@ class StorageManager
      *
      * @param array $tags To filter on array of tags
      * @param null|string $search If you want to search in the field values
-     * @return mixed
+     * @return Pagerfanta
      */
     public function getResources($tags = [], $search = null)
     {
@@ -79,7 +81,9 @@ class StorageManager
             );
         }
         $query->sort('createdAt', 'desc');
-        $resources = $query->getQuery()->execute();
-        return $resources;
+        $adapter = new DoctrineODMMongoDBAdapter($query);
+
+        $pager = new Pagerfanta($adapter);
+        return $pager;
     }
 }

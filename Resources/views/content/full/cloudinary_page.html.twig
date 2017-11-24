@@ -1,12 +1,22 @@
-<form method="get">
-    <input type="text" name="s" value="{{ app.request.get('s') }}" />
+<form class="cloudinary-search" method="get">
+    <input type="text" name="s" value="{{ searchText }}" />
     <button type="submit">{{ 'keyteq.cloudinary_meta_indexer.search'|trans }}</button>
 </form>
 
-<div class="row">
+<div class="row cloudinary-results">
     {% for resource in resources %}
         <div class="col-xs-6 col-md-4 col-lg-3">
             {% include 'KeyteqCloudinaryMetaIndexerBundle:cloudinary:resource.html.twig' with {'resource': resource} %}
         </div>
     {% endfor %}
 </div>
+
+{% if resources.haveToPaginate() %}
+    <div class="pagerfanta cloudinary-pager">
+        {% set routeParams = {} %}
+        {% if searchText %}
+            {% set routeParams = routeParams|merge({'s': searchText}) %}
+        {% endif %}
+        {{ pagerfanta( resources, 'twitter_bootstrap_translated', {'routeName': location, 'routeParams': routeParams} ) }}
+    </div>
+{% endif %}
