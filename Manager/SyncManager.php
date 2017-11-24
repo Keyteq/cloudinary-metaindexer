@@ -7,11 +7,15 @@
  */
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Manager;
 
+use eZ\Publish\API\Repository\Values\Content\LocationQuery;
+use eZ\Publish\Core\MVC\Symfony\Cache\Http\InstantCachePurger;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\AdapterInterface;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Console\Output\OutputInterface;
+use eZ\Publish\API\Repository\Repository;
+use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 
 class SyncManager
 {
@@ -35,12 +39,37 @@ class SyncManager
      */
     protected $adapter;
 
-    public function __construct(StorageManager $storageManager, AdapterInterface $adapter, array $config, LoggerInterface $logger = null)
+    /**
+     * @var Repository
+     */
+    protected $repository;
+
+    /**
+     * @var string
+     */
+    protected $contentTypeIdentifier;
+
+    /**
+     * @var InstantCachePurger
+     */
+    protected $cachePurger;
+
+    public function __construct(
+        StorageManager $storageManager,
+        AdapterInterface $adapter,
+        array $config,
+        Repository $repository,
+        $contentTypeIdentifier,
+        $cachePurger,
+        LoggerInterface $logger = null)
     {
+        $this->contentTypeIdentifier = $contentTypeIdentifier;
+        $this->repository = $repository;
         $this->storageManager = $storageManager;
         $this->config = $config;
         $this->logger = $logger instanceof LoggerInterface ? $logger : new NullLogger();
         $this->adapter = $adapter;
+        $this->cachePurger = $cachePurger;
     }
 
     public function sync(OutputInterface $output)
@@ -116,6 +145,20 @@ class SyncManager
             $this->logException($e);
             throw $e;
         }
+
+
+        // Find all cloudinary_page objects and purge cache of those.
+        $searchService = $this->repository->getSearchService();
+        $query = new LocationQuery();
+        $query->filter = new Criterion\ContentTypeIdentifier($this->contentTypeIdentifier);
+        $searchResult = $searchService->findLocations( $query );
+        $locationIdsToPurge = array();
+        foreach ($searchResult->searchHits as $hit) {
+            $location = $hit->valueObject;
+            $locationIdsToPurge[] = $location->id;
+        }
+        $this->cachePurger->purge($locationIdsToPurge);
+
     }
 
     /**
