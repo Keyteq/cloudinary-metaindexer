@@ -54,6 +54,7 @@ class FullViewController extends Controller
         } else {
             $response = $this->get('ez_content')->viewAction($view);
         }
+        $response->setCacheEnabled(true);
         return $response;
     }
 
@@ -81,7 +82,11 @@ class FullViewController extends Controller
                 'searchText' => $search
             );
 
-        return $this->container->get( 'ez_content' )->viewLocation( $locationId, $viewType, $layout, $params );
+        $response = $this->container->get( 'ez_content' )->viewLocation( $locationId, $viewType, $layout, $params );
+
+        $response->headers->set( 'X-Location-Id', $locationId );
+        $response->setSharedMaxAge( 86400 );
+        return $response;
     }
 
 
