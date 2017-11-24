@@ -251,14 +251,16 @@ class CloudinaryResource
      *
      * @return string html tag representing the resource.
      */
-    public function getThumbnail () {
-        $file = $this->getPublicId() . '.jpg';
-        return cl_image_tag($file, array(
+    public function getThumbnail ($params = array()) {
+        $defaults = array(
             'width' => 400,
             'height' => 400,
             'crop' => 'fill',
             'resource_type' => $this->getResourceType()
-        ));
+        );
+        $params = array_merge($defaults, $params);
+        $file = $this->getPublicId() . '.jpg';
+        return cl_image_tag($file, $params);
     }
 
     public function getFileExtension () {
