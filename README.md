@@ -1,8 +1,8 @@
-# cloudinary-metaindexer - Note: Work in progress!
+# cloudinary-metaindexer
 
-Indexes cloudinary account to a mongodb database, and makes it available to list items in the frontend based on configured tags.
+Indexes cloudinary account to a mongodb database, and makes it available to list items in the frontend based on configured tags AND/OR a folder prefix.
 
-This way you can create custom eZ pages that only lists cloudinary resources tagged with certain tags. 
+This way you can create custom eZ pages that only lists cloudinary resources tagged with certain tags or within a cloudinary folder.
 
 ## Prerequisites
 
@@ -10,8 +10,9 @@ This way you can create custom eZ pages that only lists cloudinary resources tag
 - PHP 5.5+
 - Mongodb installed on the server. And php extension for mongodb installed.
 - A cloudinary account.
+- A cron job (see doc below)
 
-## INSTALL
+# INSTALL
 
 
 ### Step 1
@@ -36,7 +37,7 @@ composer require keyteq/cloudinary-metaindexer
 
 
 
-## CONFIGURE
+# CONFIGURE
 
 Add to the app kernel to enable the bundle (`app/AppKernel.php`):
 
@@ -52,11 +53,9 @@ imports:
     - resource: '@KeyteqCloudinaryMetaIndexerBundle/Resources/config/ezplatform.yml'
 ```
 
+Add required configuration (remember to change the database to something unique for your project).
 
-Configure api keys and database name for cloudinary in `app/config/config.yml`
-
-In the example below we use environment parameters as values (so you keep the secrets safe).
-
+app/config/config.yml:
 ```
 keyteq_cloudinary_meta_indexer:
     cloudinary_api_key: '%cloudinary_key%'
@@ -66,6 +65,24 @@ keyteq_cloudinary_meta_indexer:
         server: ~
         database: 'myproject_cloudinary' # Change this to something unique for the project.
 ```
+
+And update parameters.yml.dist:
+
+```
+parameters:
+    # ....
+    cloudinary_cloud_name: ~
+    cloudinary_key: ~
+    cloudinary_secret: ~
+    # ....
+```
+
+Run composer install to add your secret parameters.
+
+```
+composer install
+```
+
 
 ## Test cloudinary sync
 
@@ -96,7 +113,7 @@ your own after you import the content class.
 After imported, create a new content object of that specific class.
 
 
-## Extending the template with a pagelayout
+# Extending the template with a pagelayout
 
 
 ### Step 1
