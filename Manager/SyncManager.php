@@ -157,8 +157,9 @@ class SyncManager
             $location = $hit->valueObject;
             $locationIdsToPurge[] = $location->id;
         }
-        $this->cachePurger->purge($locationIdsToPurge);
-
+        if ($locationIdsToPurge) {
+            $this->cachePurger->purge($locationIdsToPurge);
+        }
     }
 
     /**
