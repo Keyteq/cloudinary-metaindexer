@@ -1,4 +1,4 @@
 parameters:
-    ezsettings.default.cloudinary_meta_indexer.resources_per_page: 10
+    ezsettings.default.cloudinary_meta_indexer.resources_per_page: 12
 imports:
     - { resource: content_view.yml }
