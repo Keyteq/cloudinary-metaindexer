@@ -4,8 +4,7 @@ ezpublish:
             content_view:
                 full:
                     '%keyteq_cloudinary_meta_indexer.content_type_identifier%':
-                        # todo controller: viewCloudinaryPage is for ez platform, viewCloudinaryPageLocation is for 5.X . resolve this in some way. Currently need to redefine this for 5.x.
-                        controller: keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPage
+                        controller: '%keyteq_cloudinary_meta_indexer.controller.full%'
                         template: "KeyteqCloudinaryMetaIndexerBundle:content/full:cloudinary_page.html.twig"
                         match:
-                            Identifier\ContentType: cloudinary_page
+                            Identifier\ContentType: '%keyteq_cloudinary_meta_indexer.content_type_identifier%'

@@ -11,7 +11,6 @@ namespace Keyteq\Bundle\CloudinaryMetaIndexer\Controller;
 use eZ\Bundle\EzPublishCoreBundle\Controller;
 use eZ\Publish\Core\MVC\Symfony\View\BaseView;
 use eZ\Publish\Core\MVC\Symfony\View\ContentView;
-use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Manager\StorageManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -32,9 +31,10 @@ class FullViewController extends Controller
     }
 
     /**
-     * Controller action for viewing a cloudinary_page location.
+     * For eZ Platform only. Controller action for viewing a cloudinary_page location.
      * Supports Netgen site api out of the box.
      *
+     * @see \Keyteq\Bundle\CloudinaryMetaIndexer\Controller\FullViewController::viewCloudinaryPageLocation If you are running eZ Publish 5.X.
      * @param Request $request
      * @param BaseView $view
      * @return ContentView|\Netgen\Bundle\EzPlatformSiteApiBundle\View\ContentView
@@ -60,8 +60,10 @@ class FullViewController extends Controller
 
 
     /**
-     * Use for eZ Publish 5.X only. If on eZ Platform, use viewCloudinaryPage instead.
+     * Use for eZ Publish 5.X only.
      *
+     *
+     * @see \Keyteq\Bundle\CloudinaryMetaIndexer\Controller\FullViewController::viewCloudinaryPage If you are running eZ Platform.
      * @param Request $request
      * @param $locationId
      * @param $viewType
@@ -90,6 +92,14 @@ class FullViewController extends Controller
     }
 
 
+    /**
+     * Gets a pagerfanta object based on request and current content.
+     *
+     * @param Request $request
+     * @param $content
+     * @param $search
+     * @return \Pagerfanta\Pagerfanta
+     */
     private function getPager (Request $request, $content, $search) {
         $tags = trim($content->getFieldValue('tags')->text);
         $publicIdPrefix = trim($content->getFieldValue('publicid_prefix')->text);

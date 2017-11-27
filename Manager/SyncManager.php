@@ -54,6 +54,16 @@ class SyncManager
      */
     protected $cachePurger;
 
+    /**
+     * SyncManager constructor.
+     * @param StorageManager $storageManager
+     * @param AdapterInterface $adapter
+     * @param array $config
+     * @param Repository $repository
+     * @param $contentTypeIdentifier
+     * @param $cachePurger
+     * @param LoggerInterface|null $logger
+     */
     public function __construct(
         StorageManager $storageManager,
         AdapterInterface $adapter,
@@ -72,6 +82,12 @@ class SyncManager
         $this->cachePurger = $cachePurger;
     }
 
+    /**
+     * Runs calls to cloudinary API and stores the data in a mongodb database.
+     *
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     public function sync(OutputInterface $output)
     {
         try {
@@ -146,7 +162,14 @@ class SyncManager
             throw $e;
         }
 
+        $this->purgeCloudinaryPageLocationCache();
+    }
 
+    /**
+     * Purges cache for all cloudinary pages.
+     */
+    protected function purgeCloudinaryPageLocationCache ()
+    {
         // Find all cloudinary_page objects and purge cache of those.
         $searchService = $this->repository->getSearchService();
         $query = new LocationQuery();

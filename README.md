@@ -129,15 +129,13 @@ ezpublish:
             content_view:
                 full:
                     cloudinary_page:
-                        controller: keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPage
+                        controller: '%keyteq_cloudinary_meta_indexer.controller.full%'
                         template: "AcmeDemoBundle:content/full:cloudinary_page.html.twig"
                         match:
                             Identifier\ContentType: cloudinary_page
 ```
 
 Note: If you are using layouts, use "ngcontent_view" instead of content_view.
-
-Note: if you are on eZ Publish 5.X ( not platform), change `viewCloudinaryPage` to `viewCloudinaryPageLocation`.
 
 
 #### Customization of controller
