@@ -113,12 +113,17 @@ your own after you import the content class.
 After imported, create a new content object of that specific class.
 
 
-# Extending the template with a pagelayout
+# Extending the template with a pagelayout (required for 5.x of eZ)
+
+Step 1 is required for 5.X of ezpublish.
 
 
 ### Step 1
 
 By default, we don't extend any template, so the layout will be empty ( no header and footer ).
+
+
+Note for 5.X: use `keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPageLocation` instead of `%keyteq_cloudinary_meta_indexer.controller.full%`.
 
 Create your own override in `content_view.yml`:
 

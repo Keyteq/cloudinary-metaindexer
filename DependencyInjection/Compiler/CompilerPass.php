@@ -9,6 +9,5 @@ class CompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-
     }
 }
