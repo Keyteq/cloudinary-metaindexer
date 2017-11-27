@@ -1,6 +1,6 @@
 {% for tag in tags %}
     <span class="cloudinary-tag {{ tag.active ? ' tag-active ' : '' }} ">
-        <input {{ tag.active ? ' checked ' : '' }}
+        <input onChange="this.form.submit()" {{ tag.active ? ' checked ' : '' }}
                 name="tags[]" type="checkbox" id="tag-{{ tag.name }}"
                 value="{{ tag.name }}"
                 data-keyword="{{ tag.name }}"
