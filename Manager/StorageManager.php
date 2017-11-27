@@ -67,9 +67,65 @@ class StorageManager
      */
     public function getResources($tags = [], $search = null, $publidIdPrefix = null)
     {
+        $query = $this->getQuery($tags, $search, $publidIdPrefix);
+        $adapter = new DoctrineODMMongoDBAdapter($query);
+        $pager = new Pagerfanta($adapter);
+        return $pager;
+    }
+
+    public function getTagCloud (
+        $queryFilterableTags = [],
+        $tagsRequired = [],
+        $search = null,
+        $publidIdPrefix = null,
+        $sortField = 'count',
+        $sortMethod = SORT_DESC
+    ) {
+        // Make sure there are no empty elements.
+        $queryFilterableTags = array_filter($queryFilterableTags, function($value) { return trim($value) !== ''; });
+        $searchTags = array_merge($tagsRequired,$queryFilterableTags);
+        $query = $this->getQuery($searchTags, $search, $publidIdPrefix);
+        $resources = $query->getQuery()->execute();
+        $cloud = [];
+
+        /** @var CloudinaryResource $resource */
+        foreach ($resources as $resource) {
+            $resourceTags = $resource->getTags();
+            if ($resourceTags) {
+                foreach ($resourceTags as $tag) {
+                    // Exclude internal non-filterable tags.
+                    if (!in_array($tag, $tagsRequired)) {
+                        if (!isset($cloud[$tag])) {
+                            $cloud[$tag] = [
+                                'name' => $tag,
+                                'count' => 1,
+                                'active' => in_array($tag, $queryFilterableTags)
+                            ];
+                        } else {
+                            $cloud[$tag]['count']++;
+                        }
+                    }
+                }
+            }
+        }
+
+        $count = array();
+        foreach ($cloud as $key => $row)
+        {
+            $count[$key] = $row[$sortField];
+        }
+        array_multisort($count, $sortMethod, $cloud);
+
+        return $cloud;
+    }
+
+    private function getQuery ($tags = [], $search = null, $publidIdPrefix = null) {
+        // Make sure there are no empty elements.
+        $tags = array_filter($tags, function($value) { return $value !== ''; });
+
         $query = $this->getManager()->createQueryBuilder(CloudinaryResource::class);
         if ($tags) {
-            $query->field('tags')->in($tags);
+            $query->field('tags')->all($tags);
         }
         if ($search) {
             $searchRegex = new \MongoRegex('/.*'.preg_quote($search, '/').'.*/i');
@@ -87,9 +143,6 @@ class StorageManager
             );
         }
         $query->sort('createdAt', 'desc');
-        $adapter = new DoctrineODMMongoDBAdapter($query);
-
-        $pager = new Pagerfanta($adapter);
-        return $pager;
+        return $query;
     }
 }

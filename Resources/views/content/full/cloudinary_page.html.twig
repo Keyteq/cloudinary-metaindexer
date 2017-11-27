@@ -1,14 +1,23 @@
 <form class="cloudinary-search" method="get">
-    <input type="text" name="s" value="{{ searchText }}" />
+    <div class="tag-search">
+        <label for="tag-search">{{ 'keyteq.cloudinary_meta_indexer.search'|trans }}</label>
+        <input type="text" id="tag-search" name="s" value="{{ searchText }}" />
+    </div>
+    <div class="tag-cloud">
+        {% include 'KeyteqCloudinaryMetaIndexerBundle:cloudinary:tag_cloud.html.twig' with {
+        'tags': tagCloud
+        } %}
+    </div>
     <button type="submit">{{ 'keyteq.cloudinary_meta_indexer.search'|trans }}</button>
 </form>
+
 
 <div class="row cloudinary-results">
     {% for resource in resources %}
         <div class="col-xs-6 col-md-4 col-lg-3">
             {% include 'KeyteqCloudinaryMetaIndexerBundle:cloudinary:resource.html.twig' with {
                 'resource': resource,
-                'imageClass': 'img-responsive',
+                'imageClass': 'img-responsive img-fluid',
                 'imageWidth': 400,
                 'imageHeight': 400
             } %}
@@ -21,6 +30,9 @@
         {% set routeParams = {} %}
         {% if searchText %}
             {% set routeParams = routeParams|merge({'s': searchText}) %}
+        {% endif %}
+        {% if activeSearchTags %}
+            {% set routeParams = routeParams|merge({'tags': activeSearchTags}) %}
         {% endif %}
         {{ pagerfanta( resources, 'twitter_bootstrap_translated', {'routeName': location, 'routeParams': routeParams} ) }}
     </div>

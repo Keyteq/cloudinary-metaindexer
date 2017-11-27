@@ -42,10 +42,12 @@ class FullViewController extends Controller
     public function viewCloudinaryPage(Request $request, BaseView $view) {
         $search = trim($request->get('s'));
         $content = $view->getContent();
-        $pager = $this->getPager($request, $content, $search);
+        $result = $this->getPager($request, $content, $search);
 
         $view->addParameters(array(
-            'resources' => $pager,
+            'activeSearchTags' => $result['activeSearchTags'],
+            'resources' => $result['pager'],
+            'tagCloud' => $result['tagCloud'],
             'searchText' => $search
         ));
 
@@ -77,12 +79,14 @@ class FullViewController extends Controller
         $content = $this->getRepository()->getContentService()->loadContent( $location->contentId );
         $search = trim($request->get('s'));
 
-        $pager = $this->getPager($request, $content, $search);
+        $result = $this->getPager($request, $content, $search);
 
         $params = $params + array(
-                'resources' => $pager,
-                'searchText' => $search
-            );
+            'activeSearchTags' => $result['activeSearchTags'],
+            'resources' => $result['pager'],
+            'tagCloud' => $result['tagCloud'],
+            'searchText' => $search
+        );
 
         $response = $this->container->get( 'ez_content' )->viewLocation( $locationId, $viewType, $layout, $params );
 
@@ -98,21 +102,33 @@ class FullViewController extends Controller
      * @param Request $request
      * @param $content
      * @param $search
-     * @return \Pagerfanta\Pagerfanta
+     * @return array
      */
     private function getPager (Request $request, $content, $search) {
         $tags = trim($content->getFieldValue('tags')->text);
         $publicIdPrefix = trim($content->getFieldValue('publicid_prefix')->text);
+        $searchTags = $request->get('tags', []);
+        if (!is_array($searchTags)) {
+            $searchTags = [];
+        }
 
         if ($tags) {
             $tags = explode(',', $tags);
+        } else {
+            $tags = [];
         }
 
-        $pager = $this->storageManager->getResources($tags, $search, $publicIdPrefix);
+        $pager = $this->storageManager->getResources(array_merge($tags,  $searchTags), $search, $publicIdPrefix);
+        $tagCloud = $this->storageManager->getTagCloud($searchTags, $tags, $search, $publicIdPrefix);
         $pager->setCurrentPage((int)$request->get('page', 1));
         $maxResultCount = $this->getConfigResolver()->getParameter('cloudinary_meta_indexer.resources_per_page');
         $pager->setMaxPerPage($maxResultCount);
-        return $pager;
+
+        return [
+            'activeSearchTags' => $searchTags,
+            'pager' => $pager,
+            'tagCloud' => $tagCloud
+        ];
     }
 
 }

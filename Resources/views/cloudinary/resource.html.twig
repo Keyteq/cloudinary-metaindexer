@@ -6,7 +6,7 @@
 cloudinary-resource-format--{{ resource.format }}
 cloudinary-resource-ext--{{ resource.getFileExtension() }}"
 >
-    <a href="{{ resource.secureUrl }}" target="_blank">
+    <div class="cloudinary-resource__image">
         {% if resource.resourceType == 'raw' %}
             {{ resource.getPublicId() }}
         {% else %}
@@ -16,5 +16,10 @@ cloudinary-resource-ext--{{ resource.getFileExtension() }}"
                 'heigt': imageHeight
             })|raw }}
         {% endif %}
-    </a>
+    </div>
+
+    <div class="cloudinary-resource__meta">
+        <a download href="{{ resource.secureUrl }}" target="_blank">{{ 'keyteq.cloudinary_meta_indexer.download'|trans }}</a>
+    </div>
+
 </div>

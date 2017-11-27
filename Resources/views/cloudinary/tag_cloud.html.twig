@@ -1,0 +1,11 @@
+{% for tag in tags %}
+    <span class="cloudinary-tag {{ tag.active ? ' tag-active ' : '' }} ">
+        <input {{ tag.active ? ' checked ' : '' }}
+                name="tags[]" type="checkbox" id="tag-{{ tag.name }}"
+                value="{{ tag.name }}"
+                data-keyword="{{ tag.name }}"
+                data-id="{{ tag.name }}"
+                data-count="{{ tag.count }}">
+        <label for="tag-{{ tag.name }}">{{ tag.name }} <span class="cloudinary-tag__count">{{ tag.count }}</span></label>
+    </span>
+{% endfor %}
