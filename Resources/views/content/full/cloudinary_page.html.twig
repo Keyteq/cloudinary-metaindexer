@@ -22,6 +22,9 @@
                 'imageHeight': 400
             } %}
         </div>
+        {% if loop.index % 2 == 0 %}<div class="clearfix visible-xs"></div>{% endif %}
+        {% if loop.index % 3 == 0 %}<div class="clearfix visible-md"></div>{% endif %}
+        {% if loop.index % 4 == 0 %}<div class="clearfix visible-lg"></div>{% endif %}
     {% endfor %}
 </div>
 

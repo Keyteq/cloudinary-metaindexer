@@ -30,14 +30,6 @@ class KeyteqCloudinaryMetaIndexerExtension extends Extension implements PrependE
     {
         $configFile = __DIR__ . '/../Resources/config/ezplatform.yml';
         $config = Yaml::parse(file_get_contents($configFile));
-
-        // For 6.X+ we use the new ContentView.
-        if (class_exists('\eZ\Publish\Core\MVC\Symfony\View\BaseView')) {
-            $config['ezpublish']['system']['default']['content_view']['full']['cloudinary_page']['controller'] = 'keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPage';
-        } else {
-            $config['ezpublish']['system']['default']['content_view']['full']['cloudinary_page']['controller'] = 'keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPageLocation';
-        }
-
         $container->prependExtensionConfig('ezpublish', $config['ezpublish']);
         $container->addResource(new FileResource($configFile));
     }

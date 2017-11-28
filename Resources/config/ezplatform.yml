@@ -1,10 +1,10 @@
 ezpublish:
-  system:
-      default:
-          content_view:
-              full:
-                  cloudinary_page:
-                      controller: keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPage
-                      template: "KeyteqCloudinaryMetaIndexerBundle:content/full:cloudinary_page.html.twig"
-                      match:
-                          Identifier\ContentType: cloudinary_page
+    system:
+        default:
+            content_view:
+                full:
+                    cloudinary_page:
+                        controller: keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPage
+                        template: "KeyteqCloudinaryMetaIndexerBundle:content/full:cloudinary_page.html.twig"
+                        match:
+                            Identifier\ContentType: cloudinary_page
