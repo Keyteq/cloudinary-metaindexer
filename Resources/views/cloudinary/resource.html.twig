@@ -1,6 +1,7 @@
 {% set imageClass = imageClass|default('') %}
 {% set imageWidth = imageWidth|default(400) %}
 {% set imageHeight = imageHeight|default(400) %}
+{% set imageCrop = imageCrop|default('lfill') %}
 
 <div class="cloudinary-resource cloudinary-resource-resourcetype--{{ resource.resourceType }}
 cloudinary-resource-format--{{ resource.format }}
@@ -10,11 +11,12 @@ cloudinary-resource-ext--{{ resource.getFileExtension() }}"
         {% if resource.resourceType == 'raw' %}
             {{ resource.getPublicId() }}
         {% else %}
-            {{ resource.getThumbnail({
+            {{ keyteq_cmi_thumbnail(resource, {
                 'class': imageClass,
                 'width': imageWidth,
-                'heigt': imageHeight
-            })|raw }}
+                'heigt': imageHeight,
+                'crop': imageCrop
+            }) }}
         {% endif %}
     </div>
 

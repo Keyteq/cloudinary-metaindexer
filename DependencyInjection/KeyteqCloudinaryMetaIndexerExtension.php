@@ -25,6 +25,7 @@ class KeyteqCloudinaryMetaIndexerExtension extends Extension implements PrependE
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('parameters.yml');
         $loader->load('services.yml');
+        $loader->load('templating.yml');
     }
     public function prepend(ContainerBuilder $container)
     {

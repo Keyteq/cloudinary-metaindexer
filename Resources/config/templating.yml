@@ -1,0 +1,5 @@
+services:
+    keyteq.cloudinary_meta_indexer.templating.twig.extension:
+        class: Keyteq\Bundle\CloudinaryMetaIndexer\Templating\Twig\Extension\KeyteqCloudinaryMetaIndexerExtension
+        tags:
+            - { name: twig.extension }

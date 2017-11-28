@@ -245,25 +245,6 @@ class CloudinaryResource
         $this->context = $context;
     }
 
-
-    /**
-     * Generates a <img> tag for previewing a resource.
-     *
-     * @param array $params Override what you want of cloudinary params here. E.g. width, height, crop etc.
-     * @return string html tag representing the resource.
-     */
-    public function getThumbnail ($params = array()) {
-        $defaults = array(
-            'width' => 400,
-            'height' => 400,
-            'crop' => 'lfill',
-            'resource_type' => $this->getResourceType()
-        );
-        $params = array_merge($defaults, $params);
-        $file = $this->getPublicId() . '.jpg';
-        return cl_image_tag($file, $params);
-    }
-
     public function getFileExtension () {
         $ext = pathinfo($this->publicId, PATHINFO_EXTENSION);
         return $ext;
