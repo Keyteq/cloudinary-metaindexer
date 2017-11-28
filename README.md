@@ -45,14 +45,6 @@ Add to the app kernel to enable the bundle (`app/AppKernel.php`):
 new Keyteq\Bundle\CloudinaryMetaIndexer\CloudinaryMetaIndexerBundle(),
 ```
 
-Add standard views configuration to `app/config/ezplatform.yml` / `ezpublish/config/ezpublish.yml`:
-
-```
-imports:
-    ...
-    - resource: '@KeyteqCloudinaryMetaIndexerBundle/Resources/config/ezplatform.yml'
-```
-
 Add required configuration (remember to change the database to something unique for your project).
 
 app/config/config.yml:
@@ -122,10 +114,10 @@ Step 1 is required for 5.X of ezpublish.
 
 By default, we don't extend any template, so the layout will be empty ( no header and footer ).
 
+- Note: For 5.x use controller `keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPageLocation`.
+- Note: If you are using layouts, use "ngcontent_view" instead of content_view.
 
-Note for 5.X: use `keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPageLocation` instead of `%keyteq_cloudinary_meta_indexer.controller.full%`.
-
-Create your own override in `content_view.yml`:
+Create your own override in `yourezbundleconfig.yml`:
 
 ```
 ezpublish:
@@ -134,13 +126,12 @@ ezpublish:
             content_view:
                 full:
                     cloudinary_page:
-                        controller: '%keyteq_cloudinary_meta_indexer.controller.full%'
+                        controller: keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPage
                         template: "AcmeDemoBundle:content/full:cloudinary_page.html.twig"
                         match:
                             Identifier\ContentType: cloudinary_page
 ```
 
-Note: If you are using layouts, use "ngcontent_view" instead of content_view.
 
 
 #### Customization of controller

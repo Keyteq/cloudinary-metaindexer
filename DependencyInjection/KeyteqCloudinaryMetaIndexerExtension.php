@@ -2,10 +2,12 @@
 
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\DependencyInjection;
 
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Yaml\Yaml;
 
 class KeyteqCloudinaryMetaIndexerExtension extends Extension
 {
@@ -20,6 +22,14 @@ class KeyteqCloudinaryMetaIndexerExtension extends Extension
         $container->setParameter('cloudinary_meta_indexer.config', $config);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('parameters.yml');
         $loader->load('services.yml');
+    }
+    public function prepend(ContainerBuilder $container)
+    {
+        $configFile = __DIR__ . '/../Resources/config/ezplatform.yml';
+        $config = Yaml::parse(file_get_contents($configFile));
+        $container->prependExtensionConfig('ezpublish', $config);
+        $container->addResource(new FileResource($configFile));
     }
 }

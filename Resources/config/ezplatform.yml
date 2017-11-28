@@ -1,6 +1,2 @@
-parameters:
-    ezsettings.default.cloudinary_meta_indexer.resources_per_page: 12
-    keyteq_cloudinary_meta_indexer.content_type_identifier: 'cloudinary_page'
-    keyteq_cloudinary_meta_indexer.controller.full: keyteq.cloudinary_meta_indexer.controller.full_view:viewCloudinaryPage
 imports:
     - { resource: content_view.yml }
