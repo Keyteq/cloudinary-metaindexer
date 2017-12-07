@@ -118,8 +118,8 @@ class FullViewController extends Controller
             $tags = [];
         }
 
-        $pager = $this->storageManager->getResources(array_merge($tags,  $searchTags), $search, $publicIdPrefix);
-        $tagCloud = $this->storageManager->getTagCloud($searchTags, $tags, $search, $publicIdPrefix);
+        $pager = $this->storageManager->getResources($tags, $searchTags, $search, $publicIdPrefix);
+        $tagCloud = $this->storageManager->getTagCloud($tags, $searchTags, $search, $publicIdPrefix);
         $pager->setCurrentPage((int)$request->get('page', 1));
         $maxResultCount = $this->getConfigResolver()->getParameter('cloudinary_meta_indexer.resources_per_page');
         $pager->setMaxPerPage($maxResultCount);

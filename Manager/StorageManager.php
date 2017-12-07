@@ -65,17 +65,17 @@ class StorageManager
      * @param null|string $search If you want to search in the field values
      * @return Pagerfanta
      */
-    public function getResources($tags = [], $search = null, $publidIdPrefix = null)
+    public function getResources(array $tags = [], array $searchTags = [], $search = null, $publidIdPrefix = null)
     {
-        $query = $this->getQuery($tags, $search, $publidIdPrefix);
+        $query = $this->getQuery($tags, $searchTags, $search, $publidIdPrefix);
         $adapter = new DoctrineODMMongoDBAdapter($query);
         $pager = new Pagerfanta($adapter);
         return $pager;
     }
 
     public function getTagCloud (
-        $queryFilterableTags = [],
-        $tagsRequired = [],
+        array $tagsRequired = [],
+        array $queryFilterableTags = [],
         $search = null,
         $publidIdPrefix = null,
         $sortField = 'count',
@@ -83,8 +83,7 @@ class StorageManager
     ) {
         // Make sure there are no empty elements.
         $queryFilterableTags = array_filter($queryFilterableTags, function($value) { return trim($value) !== ''; });
-        $searchTags = array_merge($tagsRequired,$queryFilterableTags);
-        $query = $this->getQuery($searchTags, $search, $publidIdPrefix);
+        $query = $this->getQuery($tagsRequired, $queryFilterableTags, $search, $publidIdPrefix);
         $resources = $query->getQuery()->execute();
         $cloud = [];
 
@@ -119,13 +118,24 @@ class StorageManager
         return $cloud;
     }
 
-    private function getQuery ($tags = [], $search = null, $publidIdPrefix = null) {
+    private function getQuery (array $tags = [], array $searchTags = [], $search = null, $publidIdPrefix = null) {
         // Make sure there are no empty elements.
         $tags = array_filter($tags, function($value) { return $value !== ''; });
+        $searchTags = array_filter($searchTags, function($value) { return $value !== ''; });
+
+        foreach ($tags as $k => $v) {
+            $tags[$k] = trim($v);
+        }
+        foreach ($searchTags as $k => $v) {
+            $searchTags[$k] = trim($v);
+        }
 
         $query = $this->getManager()->createQueryBuilder(CloudinaryResource::class);
         if ($tags) {
-            $query->field('tags')->all($tags);
+            $query->field('tags')->in($tags);
+        }
+        if ($searchTags) {
+            $query->field('tags')->all($searchTags);
         }
         if ($search) {
             $searchRegex = new \MongoRegex('/.*'.preg_quote($search, '/').'.*/i');
