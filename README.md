@@ -35,14 +35,31 @@ Install this bundle (stable):
 composer require keyteq/cloudinary-metaindexer
 ```
 
+### Step 3 - (if you have doctrine mongodb installed from before)
 
+If you have configured doctrine mongodb in your project for some other tasks you will need to disable the auto mapping for the cloudianry meta indexer bundle. That is ONLY if you have auto_mapping set to true.
+
+Update your `config.yml` where `doctrine_mongodb` is configured:
+```
+
+doctrine_mongodb:
+    #... 
+    document_managers:
+        default:
+            auto_mapping: true
+            mappings:
+                # Disable mapping for cloudinary meta indexer bundle, it has its own document manager.
+                KeyteqCloudinaryMetaIndexerBundle:
+                    mapping: false
+
+```
 
 # CONFIGURE
 
 Add to the app kernel to enable the bundle (`app/AppKernel.php`):
 
 ```
-new Keyteq\Bundle\CloudinaryMetaIndexer\CloudinaryMetaIndexerBundle(),
+new Keyteq\Bundle\CloudinaryMetaIndexer\KeyteqCloudinaryMetaIndexerBundle(),
 ```
 
 Add required configuration (remember to change the database to something unique for your project).
