@@ -132,7 +132,7 @@ class StorageManager
 
         $query = $this->getManager()->createQueryBuilder(CloudinaryResource::class);
         if ($tags) {
-            $query->field('tags')->in($tags);
+            $query->field('tags')->all($tags);
         }
         if ($searchTags) {
             $query->field('tags')->all($searchTags);
