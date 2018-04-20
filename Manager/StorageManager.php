@@ -131,12 +131,13 @@ class StorageManager
         }
 
         $query = $this->getManager()->createQueryBuilder(CloudinaryResource::class);
-        if ($tags) {
-            $query->field('tags')->all($tags);
+
+        $allTags = array_merge($tags, $searchTags);
+
+        if (!empty($allTags)) {
+            $query->field('tags')->all($allTags);
         }
-        if ($searchTags) {
-            $query->field('tags')->all($searchTags);
-        }
+
         if ($search) {
             $searchRegex = new \MongoRegex('/.*'.preg_quote($search, '/').'.*/i');
             $query->addAnd(
