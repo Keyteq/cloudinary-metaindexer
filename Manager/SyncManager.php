@@ -9,6 +9,7 @@ namespace Keyteq\Bundle\CloudinaryMetaIndexer\Manager;
 
 use eZ\Publish\API\Repository\Values\Content\LocationQuery;
 use eZ\Publish\Core\MVC\Symfony\Cache\Http\InstantCachePurger;
+use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\AdapterInterface;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
 use Psr\Log\LoggerInterface;
@@ -50,9 +51,9 @@ class SyncManager
     protected $contentTypeIdentifier;
 
     /**
-     * @var InstantCachePurger
+     * @var \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface
      */
-    protected $cachePurger;
+    protected $purgeClient;
 
     /**
      * SyncManager constructor.
@@ -61,7 +62,7 @@ class SyncManager
      * @param array $config
      * @param Repository $repository
      * @param $contentTypeIdentifier
-     * @param $cachePurger
+     * @param \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface $purgeClient
      * @param LoggerInterface|null $logger
      */
     public function __construct(
@@ -70,7 +71,7 @@ class SyncManager
         array $config,
         Repository $repository,
         $contentTypeIdentifier,
-        $cachePurger,
+        PurgeClientInterface $purgeClient,
         LoggerInterface $logger = null)
     {
         $this->contentTypeIdentifier = $contentTypeIdentifier;
@@ -79,7 +80,7 @@ class SyncManager
         $this->config = $config;
         $this->logger = $logger instanceof LoggerInterface ? $logger : new NullLogger();
         $this->adapter = $adapter;
-        $this->cachePurger = $cachePurger;
+        $this->purgeClient = $purgeClient;
     }
 
     /**
@@ -181,7 +182,7 @@ class SyncManager
             $locationIdsToPurge[] = $location->id;
         }
         if ($locationIdsToPurge) {
-            $this->cachePurger->purge($locationIdsToPurge);
+            $this->purgeClient->purge($locationIdsToPurge);
         }
     }
 

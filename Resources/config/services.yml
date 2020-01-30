@@ -19,5 +19,5 @@ services:
             - '%cloudinary_meta_indexer.config%'
             - '@ezpublish.api.repository'
             - '%keyteq_cloudinary_meta_indexer.content_type_identifier%'
-            - '@ezpublish.http_cache.purger.instant'
+            - '@ezplatform.http_cache.purge_client'
             - "@?logger"
