@@ -5,12 +5,11 @@ services:
         class: Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\CloudinaryAdapter
         arguments:
             - '%cloudinary_meta_indexer.config%'
+
     keyteq.cloudinary_meta_indexer.storage:
         class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\StorageManager
         arguments:
-            - '@file_locator'
-            - '@keyteq.cloudinary_meta_indexer.adapter.cloudinary'
-            - '%cloudinary_meta_indexer.config%'
+            - '@doctrine.orm.entity_manager'
 
     keyteq.cloudinary_meta_indexer.sync:
         class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\SyncManager

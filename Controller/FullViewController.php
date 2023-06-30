@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: petterkjelkenes
- * Date: 15.11.2017
- * Time: 11.01
- */
 
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Controller;
 
@@ -14,17 +8,10 @@ use eZ\Publish\Core\MVC\Symfony\View\ContentView;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Manager\StorageManager;
 use Symfony\Component\HttpFoundation\Request;
 
-class FullViewController extends Controller
+final class FullViewController extends Controller
 {
-    /**
-     * @var StorageManager
-     */
-    protected $storageManager;
+    protected StorageManager $storageManager;
 
-    /**
-     * DefaultController constructor.
-     * @param StorageManager $storageManager
-     */
     public function __construct(StorageManager $storageManager)
     {
         $this->storageManager = $storageManager;
@@ -39,7 +26,8 @@ class FullViewController extends Controller
      * @param BaseView $view
      * @return ContentView|\Netgen\Bundle\EzPlatformSiteApiBundle\View\ContentView
      */
-    public function viewCloudinaryPage(Request $request, BaseView $view) {
+    public function viewCloudinaryPage(Request $request, BaseView $view)
+    {
         $search = trim($request->get('s'));
         $content = $view->getContent();
         $result = $this->getPager($request, $content, $search);
@@ -73,7 +61,7 @@ class FullViewController extends Controller
      * @param array $params
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function viewCloudinaryPageLocation( Request $request, $locationId, $viewType, $layout = false, array $params = array() )
+    public function viewCloudinaryPageLocation(Request $request, $locationId, $viewType, $layout = false, array $params = array())
     {
         $location = $this->getRepository()->getLocationService()->loadLocation( $locationId );
         $content = $this->getRepository()->getContentService()->loadContent( $location->contentId );
@@ -92,19 +80,16 @@ class FullViewController extends Controller
 
         $response->headers->set( 'X-Location-Id', $locationId );
         $response->setSharedMaxAge( 86400 );
+
         return $response;
     }
 
 
     /**
      * Gets a pagerfanta object based on request and current content.
-     *
-     * @param Request $request
-     * @param $content
-     * @param $search
-     * @return array
      */
-    private function getPager (Request $request, $content, $search) {
+    private function getPager(Request $request, $content, $search): array
+    {
         $tags = trim($content->getFieldValue('tags')->text);
         $publicIdPrefix = trim($content->getFieldValue('publicid_prefix')->text);
         $searchTags = $request->get('tags', []);
@@ -130,5 +115,4 @@ class FullViewController extends Controller
             'tagCloud' => $tagCloud
         ];
     }
-
 }
