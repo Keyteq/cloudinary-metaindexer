@@ -2,7 +2,7 @@
 
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Templating\Twig\Extension;
 
-use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
+use Keyteq\Bundle\CloudinaryMetaIndexer\Entity\CloudinaryResource;
 use Twig_Extension;
 use Twig_SimpleFunction;
 

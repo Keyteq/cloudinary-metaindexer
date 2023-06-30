@@ -12,7 +12,7 @@ use Doctrine\ODM\MongoDB\Configuration;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\AdapterInterface;
-use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
+use Keyteq\Bundle\CloudinaryMetaIndexer\Entity\CloudinaryResource;
 use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpKernel\Config\FileLocator;

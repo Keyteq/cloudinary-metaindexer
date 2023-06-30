@@ -1,13 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: petterkjelkenes
- * Date: 14.11.2017
- * Time: 12.29
- */
 
-namespace Keyteq\Bundle\CloudinaryMetaIndexer\Document;
+namespace Keyteq\Bundle\CloudinaryMetaIndexer\Entity;
 
+use DateTimeImmutable;
 
 class CloudinaryResource
 {
@@ -130,7 +125,7 @@ class CloudinaryResource
      */
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        $this->createdAt = new DateTimeImmutable($createdAt);
     }
 
     /**
@@ -245,7 +240,8 @@ class CloudinaryResource
         $this->context = $context;
     }
 
-    public function getFileExtension () {
+    public function getFileExtension()
+    {
         $ext = pathinfo($this->publicId, PATHINFO_EXTENSION);
         return $ext;
     }

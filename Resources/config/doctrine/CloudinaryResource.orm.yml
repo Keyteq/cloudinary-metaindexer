@@ -1,6 +1,6 @@
-Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource:
-    type: document
-    collection: cloudinary_resources
+Keyteq\Bundle\CloudinaryMetaIndexer\Entity\CloudinaryResource:
+    type: entity
+    table: cloudinary_resources
     fields:
         publicId:
             type: string
@@ -8,6 +8,7 @@ Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource:
             strategy: NONE
         format:
             type: string
+            nullable: true
         version:
             type: string
         resourceType:
@@ -17,16 +18,19 @@ Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource:
         createdAt:
             type: date
         bytes:
-            type: int
+            type: integer
         width:
-            type: int
+            type: integer
+            nullable: true
         height:
-            type: int
+            type: integer
+            nullable: true
         url:
-            type: string
+            type: text
         secureUrl:
-            type: string
+            type: text
         tags:
-            type: collection
+            type: array
         context:
-            type: hash
+            type: json
+            nullable: true

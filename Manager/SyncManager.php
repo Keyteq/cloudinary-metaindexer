@@ -1,17 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: petterkjelkenes
- * Date: 14.11.2017
- * Time: 13.26
- */
+
 namespace Keyteq\Bundle\CloudinaryMetaIndexer\Manager;
 
+use Doctrine\ORM\EntityManagerInterface;
 use eZ\Publish\API\Repository\Values\Content\LocationQuery;
 use eZ\Publish\Core\MVC\Symfony\Cache\Http\InstantCachePurger;
 use EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface;
 use Keyteq\Bundle\CloudinaryMetaIndexer\Adapter\AdapterInterface;
-use Keyteq\Bundle\CloudinaryMetaIndexer\Document\CloudinaryResource;
+use Keyteq\Bundle\CloudinaryMetaIndexer\Entity\CloudinaryResource;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,10 +16,7 @@ use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 
 class SyncManager
 {
-    /**
-     * @var StorageManager
-     */
-    protected $storageManager;
+    private EntityManagerInterface $entityManager;
 
     /**
      * @var array
@@ -55,18 +48,8 @@ class SyncManager
      */
     protected $purgeClient;
 
-    /**
-     * SyncManager constructor.
-     * @param StorageManager $storageManager
-     * @param AdapterInterface $adapter
-     * @param array $config
-     * @param Repository $repository
-     * @param $contentTypeIdentifier
-     * @param \EzSystems\PlatformHttpCacheBundle\PurgeClient\PurgeClientInterface $purgeClient
-     * @param LoggerInterface|null $logger
-     */
     public function __construct(
-        StorageManager $storageManager,
+        EntityManagerInterface $entityManager,
         AdapterInterface $adapter,
         array $config,
         Repository $repository,
@@ -74,9 +57,11 @@ class SyncManager
         PurgeClientInterface $purgeClient,
         LoggerInterface $logger = null)
     {
+        $this->entityManager = $entityManager;
+
+
         $this->contentTypeIdentifier = $contentTypeIdentifier;
         $this->repository = $repository;
-        $this->storageManager = $storageManager;
         $this->config = $config;
         $this->logger = $logger instanceof LoggerInterface ? $logger : new NullLogger();
         $this->adapter = $adapter;
@@ -92,21 +77,23 @@ class SyncManager
     public function sync(OutputInterface $output)
     {
         try {
-            $dm = $this->storageManager->getManager();
             $existingPubIds = array();
             $addedPubIds = array();
-            $all = $dm->getRepository(CloudinaryResource::class)->findAll();
+
+            $repository = $this->entityManager->getRepository(CloudinaryResource::class);
+            $all = $repository->findAll();
+
             foreach ($all as $resource) {
                 $existingPubIds[] = $resource->getPublicId();
             }
 
-            // Make sure to pass array &$addedPubIds as reference ( to avoid deletion of actual existing items ).
-            $this->adapter->getResources(function ($items) use ($dm, $output, &$addedPubIds) {
+            // Make sure to pass array &$addedPubIds as reference (to avoid deletion of actual existing items).
+            $this->adapter->getResources(function ($items) use ($repository, $output, &$addedPubIds) {
                 $output->writeln("Processing batch of cloudinary items...");
                 foreach ($items as $item) {
-                    $resource = $dm->find(CloudinaryResource::class, $item['public_id']);
+                    $resource = $repository->find($item['public_id']);
 
-                    if (!$resource) {
+                    if (!$resource instanceof CloudinaryResource) {
                         $resource = new CloudinaryResource();
                         $resource->setPublicId($item['public_id']);
                         $output->writeln("Adding pub-id {$item['public_id']}");
@@ -143,7 +130,7 @@ class SyncManager
                             break;
                     }
 
-                    $dm->persist($resource);
+                    $this->entityManager->persist($resource);
 
                     $addedPubIds[] = $item['public_id'];
                 }
@@ -151,13 +138,13 @@ class SyncManager
 
             // Removing resources from mongodb that is no longer in cloudinary.
             foreach ($existingPubIds as $existingPubId) {
-                if (!in_array($existingPubId, $addedPubIds)) {
-                    $document = $dm->find(CloudinaryResource::class, $existingPubId);
-                    $dm->remove($document);
+                if (!in_array($existingPubId, $addedPubIds, true)) {
+                    $document = $repository->find($existingPubId);
+                    $this->entityManager->remove($document);
                     $output->writeln("Removing pub-id {$existingPubId}.");
                 }
             }
-            $dm->flush();
+            $this->entityManager->flush();
         } catch (\Exception $e) {
             $this->logException($e);
             throw $e;
@@ -193,7 +180,6 @@ class SyncManager
      */
     protected function logException(\Exception $e)
     {
-        $this->logger->notice(get_class($e) . ': ' . $e->getMessage(), $e->getTrace());
+        $this->logger->error(get_class($e) . ': ' . $e->getMessage(), $e->getTrace());
     }
-
 }

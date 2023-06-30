@@ -11,10 +11,11 @@ services:
             - '@file_locator'
             - '@keyteq.cloudinary_meta_indexer.adapter.cloudinary'
             - '%cloudinary_meta_indexer.config%'
+
     keyteq.cloudinary_meta_indexer.sync:
         class: Keyteq\Bundle\CloudinaryMetaIndexer\Manager\SyncManager
         arguments:
-            - '@keyteq.cloudinary_meta_indexer.storage'
+            - '@doctrine.orm.entity_manager'
             - '@keyteq.cloudinary_meta_indexer.adapter.cloudinary'
             - '%cloudinary_meta_indexer.config%'
             - '@ezpublish.api.repository'

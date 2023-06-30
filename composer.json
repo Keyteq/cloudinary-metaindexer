@@ -19,9 +19,8 @@
     }
   ],
   "require": {
+    "php": "^7.4",
     "ezsystems/ezpublish-kernel": "*",
-    "doctrine/orm": "~2.4",
-    "doctrine/mongodb-odm": "^1.0",
     "cloudinary/cloudinary_php": "^1.0"
   },
   "require-dev": {
