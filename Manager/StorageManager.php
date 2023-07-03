@@ -108,19 +108,21 @@ final class StorageManager
             $query->setParameter($index, '%'.$tag.'%');
         }
 
-        if ($search) {
+        if (!empty($search)) {
             $query->andWhere(
-                $query->expr()->addOr(
-                    $query->expr()->like('cr.publicId', $search),
-                    $query->expr()->in('cr.tags', $search)
+                $query->expr()->orX(
+                    $query->expr()->like('cr.publicId', '?99'),
+                    $query->expr()->like('cr.tags', '?99')
                 )
             );
+            $query->setParameter('99', '%'.$search.'%');
         }
 
-        if ($publidIdPrefix) {
+        if (!empty($publidIdPrefix)) {
             $query->andWhere(
-                $query->expr()->like('cr.publicId', $publidIdPrefix.'%')
+                $query->expr()->like('cr.publicId', '?999')
             );
+            $query->setParameter('999', $publidIdPrefix.'%');
         }
 
         $query->orderBy('cr.createdAt', 'desc');
