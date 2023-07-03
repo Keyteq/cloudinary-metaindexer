@@ -101,12 +101,11 @@ final class StorageManager
 
         $allTags = array_merge($tags, $searchTags);
 
-        if (!empty($allTags)) {
-            $allTags = implode($allTags, ',');
+        foreach ($allTags as $index => $tag) {
             $query->andWhere(
-                $query->expr()->like('cr.tags', '?1')
+                $query->expr()->like('cr.tags', '?'.$index)
             );
-            $query->setParameter('1', '%'.$allTags.'%');
+            $query->setParameter($index, '%'.$tag.'%');
         }
 
         if ($search) {
